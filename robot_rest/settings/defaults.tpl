@@ -45,8 +45,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'rest_auth',
+    'oauth2_provider',
+    #'social.apps.django_app.default',
     'rest_framework_swagger',
-
+    'rest_framework_social_oauth2',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +61,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'social_django.context_processors,backends',
+    'social_django.context_processors.login_redirect',
+)
 
 TEMPLATES = [
     {
@@ -72,8 +77,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social.apps.django_app.context_processors.backends',
-                'social.apps.django_app.context_processors.login_redirect',
+                'social_django.context_processors,backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -109,8 +114,9 @@ DATABASES = {
 AUTHENTICATION_BACKENDS = (
 
     # Facebook OAuth2
-    'social.backends.facebook.FacebookAppOAuth2',
-    'social.backends.facebook.FacebookOAuth2',
+    #'social.backends.facebook.FacebookAppOAuth2',
+    #'social.backends.facebook.FacebookOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
 
     # django-rest-framework-social-oauth2
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
@@ -124,7 +130,8 @@ AUTHENTICATION_BACKENDS = (
 REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+        #'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',

@@ -77,15 +77,15 @@ def main():
                             elif '@NAME@' in line:
                                 fout.write(line.replace('@NAME@', args.database_name))
                             elif '@SECRET@' in line:
-                                fout.write(line.replace('@SECRET@', ''.join([choice(string.letters + string.digits) for _ in range(50)])))
+                                fout.write(line.replace('@SECRET@', ''.join([choice(string.ascii_letters + string.digits) for _ in range(50)])))
                             else:
                                 fout.write(line)
                 os.remove(args.project_name + r'/'+path+'.tpl')
 
-        with open(pkg_resources.resource_filename('robot_rest', 'requirements.txt'), 'rt') as requirements:
+        '''with open(pkg_resources.resource_filename('robot_rest', 'requirements.txt'), 'rt') as requirements:
             for line in requirements:
                 subprocess.call(["pip", "install", line])
-
+        '''
         subprocess.call(["django-admin", "startproject", args.project_name])
         os.chdir(args.project_name)
         subprocess.call(["django-admin", "startapp", "core"])
@@ -108,20 +108,23 @@ def main():
         subprocess.call(['cp', args.project_name +'/settings/defaults.py', args.project_name + r'/settings.py'])
 
         models = subprocess.check_output(['python', 'manage.py', 'inspectdb'])
-
         with open("core/models.py", "w") as f:
-            [f.write(l) for l in models]
+            f.write(models.decode())
+            #[f.write(line) for line in models]
 
         subprocess.call(["drf_gen", "-m", "core/models.py", "-A"])
         subprocess.call(["mv", "drf_gen_build/admin.py", "core"])
         subprocess.call(["mv", "drf_gen_build/urls.py", "core"])
         subprocess.call(["mv", "drf_gen_build/views.py", "core"])
         subprocess.call(["mv", "drf_gen_build/serializers.py", "core"])
-        shutil.rmtree('drf_gen_build')
+        try:
+            shutil.rmtree('drf_gen_build')
+        except:
+            pass
 
         with open('requirements.txt', 'w') as f:
             requirements = subprocess.check_output(['pip', 'freeze'])
-            [f.write(l) for l in requirements]
+            [f.write(str(line)) for line in requirements]
 
         subprocess.call(['python', 'manage.py', 'makemigrations'])
         subprocess.call(['python', 'manage.py', 'migrate'])

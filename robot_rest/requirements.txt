@@ -8,14 +8,15 @@ django-jet
 django-oauth-toolkit
 django-rest-auth
 django-rest-swagger
-django-social-auth
+social-auth-core
+social-auth-app-django
 django-url-filter
 djangorestframework
 django-rest-framework-social-oauth2
 feedparser
 google-api-python-client
 Markdown
-MySQL-python
+mysqlclient
 oauth2client
 oauthlib
 openapi-codec
